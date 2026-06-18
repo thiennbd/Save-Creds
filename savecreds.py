@@ -303,8 +303,23 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
         
     def extensionUnloaded(self):
         self.save_data()
+
+    def get_project_id(self):
+        for f in Frame.getFrames():
+            title = f.getTitle()
+            if f.isVisible() and "Burp Suite" in title:
+                if " - " in title:
+                    proj_name = title.split(" - ", 1)[-1].strip()
+                    if "Temporary Project" in proj_name:
+                        return None
+                    return proj_name
+        return None
         
     def save_data(self):
+        proj_id = self.get_project_id()
+        if not proj_id:
+            return
+            
         try:
             data = []
             for block in self.blocks:
@@ -313,13 +328,17 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
                     "value": block.txt_value.getText()
                 })
             json_str = json.dumps(data)
-            self._callbacks.saveExtensionSetting("SaveCredsData", json_str)
+            self._callbacks.saveExtensionSetting("SaveCredsData_" + proj_id, json_str)
         except Exception as e:
             print("[-] Error saving data: " + str(e))
             
     def load_data(self):
+        proj_id = self.get_project_id()
+        if not proj_id:
+            return
+            
         try:
-            json_str = self._callbacks.loadExtensionSetting("SaveCredsData")
+            json_str = self._callbacks.loadExtensionSetting("SaveCredsData_" + proj_id)
             if json_str:
                 data = json.loads(json_str)
                 for item in data:
@@ -566,6 +585,16 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
                     values.append(val)
         return values
 
+    def get_selected_items(self):
+        items = []
+        for block in self.blocks:
+            if block.checkbox.isSelected():
+                val = block.txt_value.getText().strip()
+                title = block.txt_title.getText().strip()
+                if val:
+                    items.append({"title": title, "value": val})
+        return items
+
     def copy_to_clipboard(self, event):
         values = self.get_selected_values()
         if not values:
@@ -583,14 +612,34 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
             print("[-] Error copying to clipboard: " + str(e))
 
     def export_wordlist(self, event):
-        values = self.get_selected_values()
-        if not values:
+        items = self.get_selected_items()
+        if not items:
             return
         
-        # Retrieve parent window to keep modal parenting clean
         parent_window = SwingUtilities.getWindowAncestor(self.panel)
         if parent_window is None:
             parent_window = Frame()
+            
+        panel = JPanel()
+        panel.setLayout(BoxLayout(panel, BoxLayout.Y_AXIS))
+        panel.add(JLabel("Choose export format:"))
+        panel.add(Box.createVerticalStrut(10))
+        chk_include_title = JCheckBox("Include titles (e.g. Title: CookieValue)")
+        
+        pref = self._callbacks.loadExtensionSetting("SaveCreds_ExportIncludeTitle")
+        if pref == "True":
+            chk_include_title.setSelected(True)
+        else:
+            chk_include_title.setSelected(False)
+            
+        panel.add(chk_include_title)
+        
+        result = JOptionPane.showConfirmDialog(parent_window, panel, "Export Options", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)
+        if result != JOptionPane.OK_OPTION:
+            return
+            
+        include_title = chk_include_title.isSelected()
+        self._callbacks.saveExtensionSetting("SaveCreds_ExportIncludeTitle", str(include_title))
             
         # Use native OS FileDialog for lag-free experience
         fd = FileDialog(parent_window, "Save Wordlist", FileDialog.SAVE)
@@ -609,9 +658,15 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
             def do_write():
                 try:
                     with codecs.open(file_path, "w", "utf-8") as f:
-                        for item in values:
-                            f.write(item + u"\n")
+                        for i, item in enumerate(items):
+                            if include_title:
+                                f.write(item["title"] + u": \n" + item["value"] + u"\n")
+                                if i < len(items) - 1:
+                                    f.write(u"\n")
+                            else:
+                                f.write(item["value"] + u"\n")
                     print("[+] Wordlist exported successfully to: " + file_path)
+                    ToastManager.show("Exported successfully!", self.panel, 1500)
                 except Exception as e:
                     print("[-] Error saving file: " + str(e))
             
