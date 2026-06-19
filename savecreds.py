@@ -4,7 +4,7 @@ from burp import IContextMenuFactory
 from burp import ITab
 from burp import IExtensionStateListener
 from javax.swing import (
-    JPanel, JButton, JScrollPane, JLabel, JMenuItem,
+    JPanel, JButton, JScrollPane, JLabel, JMenuItem, JMenu,
     JCheckBox, JTextField, JTextArea, JFileChooser, BorderFactory, Box, BoxLayout, SwingUtilities, JWindow
 )
 from java.awt import BorderLayout, FlowLayout, Toolkit, Color, Dimension, Cursor
@@ -416,6 +416,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
     def createMenuItems(self, invocation):
         menu_list = ArrayList()
         selection_bounds = invocation.getSelectionBounds()
+        ctx = invocation.getInvocationContext()
         
         # Only show context menu item if user selected text
         if selection_bounds is not None and selection_bounds[0] != selection_bounds[1]:
@@ -434,6 +435,29 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
                     
                     item = JMenuItem("Replace in: " + title, actionPerformed=lambda x, b=block: self.replace_selected_text(invocation, b))
                     menu_list.add(item)
+                    
+        # Add Creds (Insert) feature in editors
+        if ctx in [invocation.CONTEXT_MESSAGE_EDITOR_REQUEST, invocation.CONTEXT_MESSAGE_EDITOR_RESPONSE]:
+            if self.blocks:
+                if menu_list.size() > 0:
+                    sep = JMenuItem("------------------------------")
+                    sep.setEnabled(False)
+                    menu_list.add(sep)
+                    
+                insert_menu = JMenu("Add Creds")
+                added_any = False
+                for block in self.blocks:
+                    val = block.txt_value.getText().strip()
+                    if val:
+                        title = block.txt_title.getText().strip()
+                        if not title:
+                            title = "Untitled"
+                        item = JMenuItem(title, actionPerformed=lambda x, v=val: self.insert_cred_to_editor(invocation, v))
+                        insert_menu.add(item)
+                        added_any = True
+                
+                if added_any:
+                    menu_list.add(insert_menu)
             
         return menu_list
 
@@ -502,6 +526,44 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
                 print("[+] Replaced value in block: " + block.txt_title.getText())
         except Exception as e:
             print("[-] Error replacing string: " + str(e))
+
+    def insert_cred_to_editor(self, invocation, value):
+        messages = invocation.getSelectedMessages()
+        if not messages:
+            return
+            
+        bounds = invocation.getSelectionBounds()
+        ctx = invocation.getInvocationContext()
+        is_request = (ctx == invocation.CONTEXT_MESSAGE_EDITOR_REQUEST)
+        
+        if is_request:
+            data = messages[0].getRequest()
+        else:
+            data = messages[0].getResponse()
+            
+        if data is None:
+            return
+            
+        try:
+            data_str = self._helpers.bytesToString(data)
+            
+            if bounds is not None:
+                start = bounds[0]
+                end = bounds[1]
+                new_data_str = data_str[:start] + value + data_str[end:]
+            else:
+                new_data_str = data_str + value
+                
+            new_bytes = self._helpers.stringToBytes(new_data_str)
+            
+            if is_request:
+                messages[0].setRequest(new_bytes)
+            else:
+                messages[0].setResponse(new_bytes)
+                
+            ToastManager.show("Inserted cred successfully!", None, 1500)
+        except Exception as e:
+            print("[-] Error inserting cred to editor: " + str(e))
 
     def filter_blocks(self):
         query = self.txt_search.getText().lower()
