@@ -6,17 +6,21 @@
 
 ## 🚀 Tính Năng Nổi Bật
 
-- **Thu Thập Thủ Công Tiện Lợi:** Bôi đen bất kỳ chuỗi ký tự nào trong Burp Suite, click chuột phải và chọn "Send to Save Creds" để thêm vào danh sách.
-- **Menu Thay Thế Động:** Hỗ trợ menu chuột phải cho phép thay thế (replace) trực tiếp giá trị vào một block đã có.
-- **Giao Diện Thẻ Trực Quan:** 
-  - Đặt tiêu đề gợi nhớ cho từng cookie/token.
-  - Hiển thị giá trị và cho phép chỉnh sửa trực tiếp trên từng block.
-- **Tìm Kiếm Nhanh (Search):** Dễ dàng lọc các block theo tiêu đề hoặc nội dung cookie.
-- **Thao Tác Từng Block:** Nút Copy và Clear chuyên dụng cho từng block.
-- **Sao Chép và Xuất Chọn Lọc:** 
-  - Hỗ trợ checkbox trên từng block. 
-  - Sao chép vào Clipboard hoặc xuất ra file `.txt` dạng wordlist chỉ những block đã được chọn.
-- **Import Tiêu Đề:** Khởi tạo nhanh các block từ một file danh sách các tên (Wordlist).
+- **Thu Thập & Chèn Nhanh:** Thêm cookie bằng menu "Send to Save Creds" và chèn lại vào Editor bằng menu "Add Creds".
+- **Quản Lý Dạng Thẻ:** Giao diện trực quan cho phép đặt tên (Title), kéo thả, sao chép và tìm kiếm nhanh chóng.
+- **Xuất Dữ Liệu Tùy Chọn:** Chọn lọc cookie cần xuất, tuỳ chọn format xuất.
+- **Lưu Theo Project:** Dữ liệu tự động lưu riêng biệt cho từng Burp Project.
+
+---
+
+## 📖 Hướng Dẫn Sử Dụng
+
+1. **Thu Thập Cookie:** Bôi đen giá trị cookie/token ở bất kỳ đâu trong Burp -> Chuột phải -> **Extensions** -> **Save Creds** -> **Send to Save Creds (New)**.
+2. **Chỉnh Sửa & Quản Lý:** Chuyển sang tab **Save Creds**. Tại đây bạn có thể đặt Title, sửa giá trị, xoá thẻ, hoặc tích chọn (checkbox) các thẻ muốn lưu.
+3. **Sử Dụng Lại Cookie:** 
+   - Cách 1: Copy thủ công bằng nút Copy.
+   - Cách 2: Trong tab Repeater/Proxy, nhấp chuột phải tại vị trí cần chèn -> **Extensions** -> **Save Creds** -> **Add Creds** -> Chọn tên cookie đã lưu để chèn trực tiếp.
+4. **Xuất Danh Sách:** Nhấn **Export Wordlist** để lưu các giá trị đã tích chọn ra file `.txt` (có hỏi tuỳ chọn format khi xuất).
 
 ---
 
@@ -35,29 +39,6 @@
 
 ---
 
-## 📋 Hình ảnh minh họa
-
-1. Send to Save Creds
-![alt text](./pic/send_to_extension.png)
-
-2. Import
-- File import
-![alt text](./pic/import_file.png)
-- Import
-![alt text](./pic/import_file_2.png)
-![alt text](./pic/import_file_3.png)
-
-3. Add/Replace cookie value
-![alt text](./pic/replace.png)
-![alt text](./pic/tab.png)
-
-4. Export
-![alt text](./pic/export.png)
-
-<br>
-
----
-
 # Save Creds - Burp Suite Extension (English)
 
 **Save Creds** is a lightweight Burp Suite extension that helps users collect, manage, and export credentials (Cookies, Tokens, JWTs) as a wordlist.
@@ -66,17 +47,21 @@
 
 ## 🚀 Key Features
 
-- **Convenient Manual Collection:** Highlight any string in Burp Suite, right-click, and select "Send to Save Creds" to add it to your list.
-- **Dynamic Context Menu:** Right-click context menu lets you directly replace the value in any existing block.
-- **Intuitive Card-based UI:** 
-  - Set a memorable title for each cookie/token.
-  - Display values and allow direct editing on each block.
-- **Quick Search:** Easily filter blocks by title or cookie content.
-- **Per-Block Actions:** Dedicated Copy and Clear buttons for every individual block.
-- **Selective Copy and Export:** 
-  - Checkboxes supported on each block.
-  - Copy to Clipboard or export to a `.txt` wordlist file with only the selected blocks.
-- **Import Titles:** Quickly initialize empty blocks from a wordlist file of names.
+- **Quick Collect & Insert:** Add cookies via "Send to Save Creds" and insert them back into any Editor using "Add Creds".
+- **Card-based Management:** Intuitive UI to name, drag & drop, copy, and search values quickly.
+- **Customizable Export:** Select specific cookies, customize export format.
+- **Project-Specific Storage:** Data is automatically saved and isolated per Burp Project.
+
+---
+
+## 📖 Usage Guide
+
+1. **Collect Cookies:** Highlight a cookie/token value anywhere in Burp -> Right-click -> **Extensions** -> **Save Creds** -> **Send to Save Creds (New)**.
+2. **Edit & Manage:** Go to the **Save Creds** tab. Here you can set Titles, edit values, delete cards, or check the boxes of the ones you want to export.
+3. **Reuse Cookies:**
+   - Option 1: Copy manually using the Copy button.
+   - Option 2: In any Editor tab (e.g., Repeater), Right-click where you want to insert -> **Extensions** -> **Save Creds** -> **Add Creds** -> Select the saved cookie to insert it directly.
+4. **Export Wordlist:** Click **Export Wordlist** to save checked items to a `.txt` file (prompts for format options).
 
 ---
 
@@ -92,24 +77,3 @@
 1. Configure Jython in **Extensions** -> **Extension settings** -> **Python environment**.
 2. Go to **Extensions** -> **Installed** -> **Add**.
 3. Select **Extension type:** `Python` and choose your `savecreds.py` file to load.
-
----
-
-## 📋 Screenshots
-
-1. Send to Save Creds
-![alt text](./pic/send_to_extension.png)
-
-2. Import
-- File import
-![alt text](./pic/import_file.png)
-- Import
-![alt text](./pic/import_file_2.png)
-![alt text](./pic/import_file_3.png)
-
-3. Add/Replace cookie value
-![alt text](./pic/replace.png)
-![alt text](./pic/tab.png)
-
-4. Export
-![alt text](./pic/export.png)
