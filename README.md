@@ -42,8 +42,12 @@ Tab **Save Creds** sẽ xuất hiện sau khi extension được tải.
 **Thu thập giá trị**
 Bôi đen cookie hoặc token ở bất kỳ đâu trong Burp, nhấp chuột phải, chọn **Extensions** > **Save Creds** > **Send to Save Creds (New)**. Để ghi đè một mục có sẵn, chọn **Replace in: \<title\>**.
 
+![Gửi giá trị đang bôi đen vào Save Creds từ menu chuột phải](pic/send_to_save_creds.png)
+
 **Chèn giá trị**
 Trong editor của Repeater hoặc Proxy, nhấp chuột phải tại vị trí cần chèn, chọn **Extensions** > **Save Creds** > **Add Creds** > *title*. Nếu đang bôi đen văn bản, đoạn đó sẽ bị thay thế.
+
+![Menu Add Creds và Replace Existing trong editor của Repeater](pic/save_creds_actions.png)
 
 **Quản lý các mục**
 Trong tab **Save Creds**:
@@ -55,8 +59,15 @@ Trong tab **Save Creds**:
 - **Copy to Clipboard** sao chép giá trị của các mục đã tích, mỗi giá trị một dòng.
 - **Clear Values** xóa toàn bộ giá trị nhưng giữ lại title. **Remove All** xóa toàn bộ mục.
 
+![Giao diện tab Save Creds với danh sách các mục và danh mục Titles](pic/save_creds_list.png)
+
 **Điều hướng**
 Danh mục **Titles** bên phải liệt kê mọi mục. Nhấp vào một title để cuộn tới mục đó và làm nổi bật. Kéo thanh chia để đổi độ rộng danh mục.
+
+**Tìm kiếm**
+Ô **Search** phía trên lọc các mục theo title hoặc giá trị ngay khi bạn gõ.
+
+![Lọc các mục bằng ô Search](pic/save_creds_search.png)
 
 ### Import và Export
 
@@ -122,8 +133,12 @@ A **Save Creds** tab appears when the extension loads.
 **Collect a value**
 Highlight a cookie or token anywhere in Burp, right-click, then choose **Extensions** > **Save Creds** > **Send to Save Creds (New)**. To overwrite an existing entry instead, choose **Replace in: \<title\>**.
 
+![Sending a highlighted value to Save Creds from the right-click menu](pic/send_to_save_creds.png)
+
 **Insert a value**
 In a Repeater or Proxy editor, right-click where the value should go, then choose **Extensions** > **Save Creds** > **Add Creds** > *title*. If text is selected, it is replaced.
+
+![The Add Creds and Replace Existing menus in a Repeater editor](pic/save_creds_actions.png)
 
 **Manage entries**
 Use the **Save Creds** tab:
@@ -135,8 +150,15 @@ Use the **Save Creds** tab:
 - **Copy to Clipboard** copies the values of the ticked entries, one per line.
 - **Clear Values** empties every value and keeps the titles. **Remove All** deletes all entries.
 
+![The Save Creds tab showing the entry list and the Titles panel](pic/save_creds_list.png)
+
 **Navigate**
 The **Titles** panel on the right lists every entry. Click a title to scroll to its entry and highlight it. Drag the divider to resize the panel.
+
+**Search**
+The **Search** box at the top filters entries by title or value as you type.
+
+![Filtering entries with the Search box](pic/save_creds_search.png)
 
 ### Import and Export
 
